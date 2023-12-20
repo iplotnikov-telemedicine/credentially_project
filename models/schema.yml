@@ -1,0 +1,50 @@
+version: 2
+
+sources:
+  - name: public
+    database: drfocused_mp
+    schema: public
+    description: public
+    tables:
+      - name: compliance_group_assignment_v2
+      - name: compliance_package_assignment_v2
+      - name: compliance_requirement_assignment_v2
+      - name: compliance_requirement_package
+      - name: country
+      - name: dbs_check
+      - name: document
+      - name: document_files_xref
+      - name: document_type
+      - name: document_type_requirements
+      - name: employee
+      - name: event_log
+      - name: file
+      - name: job_position
+      - name: job_position_tags_xref
+      - name: organisation
+      - name: performers_list
+      - name: personnel_types
+      - name: reference_form
+      - name: reporting_custom_tag_view
+      - name: reporting_dr_reporting_job_position_view
+      - name: reporting_job_position_custom_tags_view
+      - name: reporting_job_position_view
+      - name: reporting_onboarding_view
+      - name: right_to_work_configuration
+      - name: right_to_work_configuration_item
+      - name: right_to_work_document_configuration_item
+      - name: right_to_work_document_status_item
+      - name: right_to_work_status
+      - name: right_to_work_status_item
+      - name: staff_assignee_xref
+      - name: state
+      - name: tags
+      - name: text_requirement
+      - name: user_title
+      - name: verification
+
+
+
+# models:
+
+#   - name: reporting_job_position_events_view

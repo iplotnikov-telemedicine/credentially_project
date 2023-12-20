@@ -1,0 +1,16 @@
+select org_id,
+        jp_id,
+        document_id,
+        document_type_id,
+        file_id,
+        "Document Version",
+        convert_to_org_timezone(f.org_id, doc_upload_at)        as "Document Upload Date",
+        "Document Status",
+        "Document Issue Date",
+        "Document Expiry Date",
+        "Document Approval Status",
+        "Document Approved/Declined By",
+        convert_to_org_timezone(f.org_id, doc_verified_at)      as "Document Approval/Decline Date",
+        is_latest_version,
+        case expiry_create_desc when 1 then true else false end as is_current_version
+from {{ ref('reporting_dr_final') }} f
