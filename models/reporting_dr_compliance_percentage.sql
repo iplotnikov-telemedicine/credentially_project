@@ -28,18 +28,13 @@ with a as (
 )
 select 
     jp_id,
-    count(distinct
-        case compliance_status
-            when 'COMPLIANT'
-                then surrogate_key end) as "Compliant Records Count",
+    count(distinct case compliance_status when 'COMPLIANT' then surrogate_key end) as "Compliant Records Count",
     count(distinct surrogate_key)         as "Total Records Count",
     floor(count(
             distinct
-            case compliance_status
-                when 'COMPLIANT'
-                    then surrogate_key end)::decimal
-            /
-        count(distinct surrogate_key)::decimal *
-        100)::integer                   as "Compliance Percentage"
+            case compliance_status when 'COMPLIANT' then surrogate_key end)::decimal
+            / 
+            count(distinct surrogate_key)::decimal * 100
+    )::integer  as "Compliance Percentage"
 FROM a
 group by 1
