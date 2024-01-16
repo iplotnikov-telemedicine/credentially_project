@@ -6,6 +6,8 @@ sources:
     schema: public
     description: public
     tables:
+      # - name: checklist
+      # - name: checklist_assignment
       - name: compliance_group_assignment_v2
       - name: compliance_package_assignment_v2
       - name: compliance_requirement_assignment_v2
@@ -26,7 +28,6 @@ sources:
       - name: personnel_types
       - name: reference_form
       - name: reporting_custom_tag_view
-      - name: reporting_dr_reporting_job_position_view
       - name: reporting_job_position_custom_tags_view
       - name: reporting_job_position_view
       - name: reporting_onboarding_view

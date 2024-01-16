@@ -113,13 +113,13 @@ select
                 end)
         ELSE NULL END                                                  as "Grade",
     CASE
-        WHEN vv.is_visible is true THEN ee.state
+        WHEN vv.is_visible is true THEN sm.state
         ELSE NULL END                                                  as state,
     CASE
-        WHEN vv.is_visible is true THEN ee.country
+        WHEN vv.is_visible is true THEN sm.country
         ELSE NULL END                                                  as country_code,
     CASE
-        WHEN vv.is_visible is true THEN ee.birth_date
+        WHEN vv.is_visible is true THEN sm.birth_date
         ELSE NULL END                                                  as "Date of Birth",
     CASE
         WHEN vv.is_visible is true THEN
@@ -130,14 +130,14 @@ select
         ELSE NULL END                                                  as "Assign Onboarding",
     CASE
         WHEN vv.is_visible is true THEN
-            nullif(reporting_dr_assigned_admins_concatenated.assigned_admin, '')
+            nullif(reporting_dr_assigned_admins.assigned_admin, '')
             ELSE NULL END     										as "Assigned To",
     CASE
         WHEN vv.is_visible is true THEN
             (CASE
-                WHEN reporting_dr_user_tags_concatenated.user_tags = ' '
-                    THEN replace(reporting_dr_user_tags_concatenated.user_tags, ' ', null)
-                ELSE reporting_dr_user_tags_concatenated.user_tags END)
+                WHEN sm.tags = ' '
+                    THEN replace(sm.tags, ' ', null)
+                ELSE sm.tags END)
         ELSE NULL END                                                  as "User Tag(s)",
     CASE
         WHEN vv.is_visible is true THEN
@@ -145,9 +145,9 @@ select
                 WHEN sm.job_position_status = 'ACTIVE'
                     THEN
                     (case
-                        when ee.country = 'United States'
-                            THEN s.name
-                        ELSE ee.state END)
+                        when sm.country = 'United States'
+                            THEN sm.state_name
+                        ELSE sm.state END)
                 ELSE NULL END)
         ELSE NULL END                                                  as "State/Province",
     convert_to_org_timezone(sm.organisation_id,
@@ -163,27 +163,15 @@ select
                             where sm.job_position_id = events.job_position_id
                                 and events.event_type = 'Signed up'))   as "Staff Member Signed Up Date",
     convert_to_org_timezone(sm.organisation_id,
-                            sod.sign_off_status_last_change_at)        as "Sign Off Status Last Change Date",
-    convert_to_org_timezone(sm.organisation_id, sie.latest_sign_in_at) as "Latest Sign In Date",
-    convert_to_org_timezone(sm.organisation_id, ie.latest_invite_at)   as "Latest Invite Date"
+                            le.sign_off_status_last_change_at)        as "Sign Off Status Last Change Date",
+    convert_to_org_timezone(sm.organisation_id, le.latest_sign_in_at) as "Latest Sign In Date",
+    convert_to_org_timezone(sm.organisation_id, le.latest_invite_at)   as "Latest Invite Date"
 from {{ ref('reporting_dr_reporting_job_position_view_limited') }} sm
 left join {{ source('public', 'reporting_onboarding_view') }} onb
-            on sm.job_position_id = onb.job_position_id
-LEFT JOIN {{ source('public', 'job_position') }} jp
-            on sm."job_position_id" = jp."id"
-LEFT JOIN {{ source('public', 'employee') }} ee
-            on jp.employee_id = ee.id
+    on sm.job_position_id = onb.job_position_id
 LEFT JOIN {{ ref('reporting_dr_visible') }} vv
-            on sm.job_position_id = vv.jp_id
-left join {{ ref('reporting_dr_assigned_admins_concatenated') }} reporting_dr_assigned_admins_concatenated
-            on sm.job_position_id = reporting_dr_assigned_admins_concatenated.jp_id
-left join {{ source('public', 'state') }} s
-            on ee.state = s.iso2 and ee.country = s.country_code
-left join {{ ref('reporting_dr_user_tags_concatenated') }} reporting_dr_user_tags_concatenated
-            on sm.job_position_id = reporting_dr_user_tags_concatenated.jp_id
-left join {{ ref('reporting_dr_sign_off_date') }} sod
-            on sod.jp_id = sm.job_position_id
-left join {{ ref('reporting_dr_signed_in_event') }} sie
-            on sie.jp_id = sm.job_position_id
-left join {{ ref('reporting_dr_invited_event') }} ie
-            on ie.jp_id = sm.job_position_id
+    on sm.job_position_id = vv.jp_id
+left join {{ ref('reporting_dr_assigned_admins') }} reporting_dr_assigned_admins
+    on sm.job_position_id = reporting_dr_assigned_admins.jp_id
+left join {{ ref('reporting_dr_latest_events_by_jp') }} le
+    on le.job_position_id = sm.job_position_id
