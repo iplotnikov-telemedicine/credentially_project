@@ -32,7 +32,7 @@ select
 from {{ source('public', 'job_position') }} jp
 join {{ ref('reporting_dr_visible') }} vv
     on jp.id = vv.jp_id 
-    and vv.is_visible is True
+    and vv.is_visible_wo_archived is True
 join {{ source('public', 'personnel_types') }} pt on jp.role_id = pt.personnel_type_id
 join {{ source('public', 'organisation') }} o on pt.organisation_id = o.id
 join {{ source('public', 'employee') }} e ON jp.employee_id = e.id

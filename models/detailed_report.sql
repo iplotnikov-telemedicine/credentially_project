@@ -84,7 +84,60 @@ select
     ) as "Is Signed Up Yesterday",
     sm."Staff Member Status(es)" = 'Invited' as "Is Invited",
     sm."Assigned To" IS NULL as "Is Not Assigned",
-    sm."Signed off" = 'Signed Off' AND sm."Compliance" = 'Non-Compliant' as "Is Signed Off & Non-Compliant"
+    sm."Signed off" = 'Signed Off' AND sm."Compliance" = 'Non-Compliant' as "Is Signed Off & Non-Compliant",
+    COALESCE(
+        sm."Latest Sign In Date" < CURRENT_DATE - 2, true
+    ) as "Haven't Logged In For 3 Days",
+    COALESCE(
+        sm."Latest Sign In Date" < CURRENT_DATE - 6, true
+    ) as "Haven't Logged In For 7 Days",
+    COALESCE(
+        sm."Latest Sign In Date" < CURRENT_DATE - 13, true
+    ) as "Haven't Logged In For 14 Days",
+    COALESCE(
+        onb."Onboarding Completion Time" >= CURRENT_DATE - 30
+        AND onb."Onboarding Completion Time" < CURRENT_DATE, false
+    ) as "Completed Onboarding Last 30 Days",
+    COALESCE(
+        onb."Onboarding Completion Time" >= CURRENT_DATE - 7
+        AND onb."Onboarding Completion Time" < CURRENT_DATE, false
+    ) as "Completed Onboarding Last 7 Days",
+    COALESCE(
+        onb."Onboarding Completion Time" >= CURRENT_DATE - 1
+        AND onb."Onboarding Completion Time" < CURRENT_DATE, false
+    ) as "Completed Onboarding Yesterday",
+    COALESCE(
+        rwd."Document Expiry Date (Current Version)" >= CURRENT_DATE - 30
+        AND rwd."Document Expiry Date (Current Version)" < CURRENT_DATE, false
+    ) as "Expired Last 30 Days",
+    COALESCE(
+        rwd."Document Expiry Date (Current Version)" >= CURRENT_DATE - 7
+        AND rwd."Document Expiry Date (Current Version)" < CURRENT_DATE, false
+    ) as "Expired Last 7 Days",
+    COALESCE(
+        rwd."Document Expiry Date (Current Version)" >= CURRENT_DATE - 1
+        AND rwd."Document Expiry Date (Current Version)" < CURRENT_DATE, false
+    ) as "Expired Yesterday",
+    COALESCE(
+        rwd."Document Expiry Date (Current Version)" >= CURRENT_DATE
+        AND rwd."Document Expiry Date (Current Version)" < CURRENT_DATE + 1, false
+    ) as "Expired Today",
+    COALESCE(
+        rwd."Document Expiry Date (Current Version)" >= CURRENT_DATE + 1
+        AND rwd."Document Expiry Date (Current Version)" < CURRENT_DATE + 8, false
+    ) as "Expires In 1 Week",
+    COALESCE(
+        rwd."Document Expiry Date (Current Version)" >= CURRENT_DATE + 1
+        AND rwd."Document Expiry Date (Current Version)" < CURRENT_DATE + 15, false
+    ) as "Expires In 2 Weeks",
+    COALESCE(
+        rwd."Document Expiry Date (Current Version)" >= CURRENT_DATE + 1
+        AND rwd."Document Expiry Date (Current Version)" < CURRENT_DATE + 22, false
+    ) as "Expires In 3 Weeks",
+    COALESCE(
+        rwd."Document Expiry Date (Current Version)" >= CURRENT_DATE + 1
+        AND rwd."Document Expiry Date (Current Version)" < CURRENT_DATE + 29, false
+    ) as "Expires In 4 Weeks"
 from {{ ref('reporting_dr_staff_members') }} sm
 left join {{ ref('reporting_dr_onboarding') }} onb
     on sm.jp_id = onb.jp_id

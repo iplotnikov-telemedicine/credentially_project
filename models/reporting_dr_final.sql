@@ -9,10 +9,8 @@ select
     issued 										  as "Document Issue Date",
     expiry                                           as "Document Expiry Date",
     CASE WHEN file_expiry_status = 'Not expired' and file_verification_status = 'Approved' THEN 'Valid'
-        WHEN file_expiry_status = 'Not expired' and file_verification_status is null THEN 'Awaiting Approval'
-        WHEN file_expiry_status = 'Expires soon' and (
-            file_verification_status != 'Declined' or file_verification_status is null
-        ) THEN 'Expires soon'
+        WHEN file_expiry_status in ('Not expired', 'Expires soon') and file_verification_status is null THEN 'Awaiting Approval'
+        WHEN file_expiry_status = 'Expires soon' and file_verification_status = 'Approved' THEN 'Expires soon'
         WHEN file_verification_status = 'Declined' THEN 'Declined'
         WHEN file_expiry_status = 'Expired' THEN 'Expired'
         ELSE NULL end                                as "Document Status",

@@ -34,7 +34,7 @@ select recs.*,
 from {{ ref('reporting_dr_records_temp') }} recs
 left join current_version cv
     on recs.jp_id = cv.jp_id 
-    and recs.document_type_id = cv.document_type_id
+    and recs.document_id = cv.document_id
 left join latest_version lv
     on recs.jp_id = lv.jp_id 
-    and recs.document_type_id = lv.document_type_id
+    and recs.document_id = lv.document_id
