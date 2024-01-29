@@ -6,10 +6,6 @@ select distinct on (rtws.job_position_id)
 from {{ source('public', 'file') }} file
 inner join {{ source('public', 'document_files_xref') }} dfx
     on file.id = dfx.file_id
-inner join {{ source('public', 'document') }} document
-    on dfx.document_id = document.id
-inner join {{ source('public', 'employee') }} employee
-    on document.employee_id = employee.id
 inner join {{ source('public', 'right_to_work_document_status_item') }} rtwdsi
     on dfx.document_id = rtwdsi.document_id
 inner join {{ source('public', 'right_to_work_status_item') }} rtwsi

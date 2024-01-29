@@ -6,8 +6,8 @@ sources:
     schema: public
     description: public
     tables:
-      # - name: checklist
-      # - name: checklist_assignment
+      - name: checklist
+      - name: checklist_assignment
       - name: compliance_group_assignment_v2
       - name: compliance_package_assignment_v2
       - name: compliance_requirement_assignment_v2
@@ -27,10 +27,7 @@ sources:
       - name: performers_list
       - name: personnel_types
       - name: reference_form
-      - name: reporting_custom_tag_view
-      - name: reporting_job_position_custom_tags_view
-      - name: reporting_job_position_view
-      - name: reporting_onboarding_view
+      - name: reporting_events_view
       - name: right_to_work_configuration
       - name: right_to_work_configuration_item
       - name: right_to_work_document_configuration_item
@@ -43,6 +40,7 @@ sources:
       - name: text_requirement
       - name: user_title
       - name: verification
+      
 
 
 
